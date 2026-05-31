@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百里屠苏 · 古剑奇谭</title>
+    <style>
+        * {
+            /* 清除所有元素的默认内外边距 */
+            margin: 0;
+            padding: 0;
+            /* 盒模型计算规则：宽高包含边框和内边距（核心属性） */
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eae1d2;
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+            line-height: 1.6;
+            padding: 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .content-wrapper {
+            max-width: 1200px;
+            /* 稍放宽以容纳两栏 */
+            width: 100%;
+            background: #fffcf7;
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(60, 40, 20, 0.35),
+                0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 2.2rem 2.5rem;
+            border: 1px solid #e9dacb;
+        }
+
+        /* 两栏布局容器 */
+        .main-layout {
+            display: flex;
+            gap: 2.5rem;
+            /* 左右栏间距 */
+            align-items: flex-start;
+            /* 顶部对齐 */
+        }
+
+        /* 左栏：所有文字内容 */
+        .left-column {
+            flex: 2;
+            /* 占用更多宽度 */
+            min-width: 0;
+            /* 防止flex溢出 */
+        }
+
+        /* 右栏：图片区域 */
+        .right-column {
+            flex: 1;
+            /* 约占1/3 */
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 右侧图片样式 */
+        .right-column img {
+            width: 100%;
+            height: auto;
+            border-radius: 24px;
+            box-shadow: 0 16px 28px -10px rgba(70, 40, 20, 0.5),
+                0 0 0 1px #dac9b6 inset;
+            border: 2px solid #cfb99c;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            object-fit: contain;
+            /* 保持比例，不裁剪 */
+            background-color: #f2e6d8;
+            /* 图片底色，与边框融合 */
+        }
+
+        .right-column img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 32px -8px #7a5a3c;
+        }
+
+        /* 标题h1：文字+装饰伪类，使用flex便于换行 */
+        h1 {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem 1rem;
+            /* 间距 */
+            font-size: 2.8rem;
+            font-weight: 400;
+            letter-spacing: 4px;
+            color: #3e2c1c;
+            font-family: 'Georgia', 'Times New Roman', '宋体', serif;
+            text-shadow: 2px 2px 0 rgba(200, 170, 140, 0.15);
+            margin: 0 0 0.2rem 0;
+        }
+
+        /* 焚寂剑魄装饰 */
+        h1::after {
+            content: '⚔️ 焚寂·剑魄 ⚔️';
+            font-size: 0.9rem;
+            font-family: 'Georgia', '楷体', serif;
+            color: #ab8b6b;
+            letter-spacing: 1.5px;
+            font-weight: 300;
+            background: rgba(190, 160, 130, 0.15);
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            display: inline-block;
+            border: 1px solid #dac09e;
+            white-space: nowrap;
+            /* 防止装饰折断，但可换行 */
+        }
+
+        /* 其余原有样式保持不变（略作微调） */
+        hr {
+            border: none;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #c2a27e, #ab8b64, #c2a27e, transparent);
+            margin: 1.2rem 0 1.8rem 0;
+            width: 100%;
+            border-radius: 4px;
+            opacity: 0.7;
+        }
+
+        h2 {
+            font-size: 2.0rem;
+            font-weight: 380;
+            color: #4f3b28;
+            margin: 2rem 0 0.2rem 0;
+            padding-left: 1rem;
+            border-left: 8px solid #b48a63;
+            letter-spacing: 2px;
+            font-family: 'Georgia', '楷体', 'KaiTi', serif;
+        }
+
+        h3 {
+            font-size: 1.7rem;
+            font-weight: 420;
+            color: #6b4b30;
+            margin: 2.0rem 0 0.2rem 0;
+            padding-left: 0.8rem;
+            border-left: 5px solid #d1af8b;
+            font-family: 'Trebuchet MS', '楷体', serif;
+            letter-spacing: 1px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            color: #2e251e;
+            margin: 1rem 0;
+            text-align: justify;
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'WenQuanYi Micro Hei', sans-serif;
+        }
+
+        h2+p,
+        h2~p {
+            background: rgba(250, 242, 232, 0.6);
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px 8px 20px 8px;
+            box-shadow: inset 0 1px 4px rgba(255, 250, 240, 0.8), 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        h3+p {
+            background: #fcf6ed;
+            border-radius: 30px 12px 30px 12px;
+            padding: 1.2rem 2rem;
+            box-shadow: 0 10px 18px -12px #947a60, 0 0 0 1px #eadbc9 inset;
+            font-size: 1.08rem;
+            margin: 1rem 0 2rem 0;
+            border-left: 6px solid #c5a176;
+            transition: background 0.2s;
+        }
+
+        h3+p:hover {
+            background: #faf0e2;
+            box-shadow: 0 10px 20px -10px #b28b64;
+        }
+
+        h2:nth-of-type(3)~p {
+            background: #f4ecdf;
+            padding: 1.2rem 2rem;
+            border-radius: 24px 8px 24px 8px;
+            line-height: 2.1;
+            border: 1px solid #e1cfb6;
+            box-shadow: inset 0 1px 5px #fffaf0;
+        }
+
+        h2:nth-of-type(2)~p {
+            background: #f7f1e8;
+            border-radius: 30px 8px 30px 8px;
+            padding: 0.9rem 2rem;
+        }
+
+        h3:last-of-type+p {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content-wrapper">
+        <div class="main-layout">
+            <!-- 左栏：全部文字内容 -->
+            <div class="left-column">
+                <h1>百里屠苏</h1>
+                <hr>
+
+                <h2>简介</h2>
+                <p>上海烛龙研发的单机游戏《古剑奇谭：琴心剑魄今何在》第一男主角，贯穿游戏主题，为故事灵魂“琴心剑魄”之“剑魄”。</p>
+                <p>原名韩云溪，太子长琴半身。幼时经历灭族之灾，本来已死去，但因体内被封进了太子长琴一半魂魄而得以死而复生。身怀凶剑焚寂的煞气，在某次煞气发作中被紫胤真人所救，后拜入昆仑山天墉城，以“屠绝鬼气，苏醒人魂”之意更名为“百里屠苏”。
+                </p>
+                <p>十年后，他为寻找灭族仇人而离开天墉城，踏上了漫漫征途。</p>
+
+                <h2>名称由来</h2>
+                <hr>
+                <p>屠苏之名，取自一种药草，也指一种酒。据说药王孙思邈以屠苏草入酒，因此有了屠苏酒。这种酒能辟邪防病，后世人们在除夕的夜晚喝屠苏酒以辞岁，希望屠苏酒辟邪防病的效果能带来健康而平安的新年，最终便有了"年年岁末饮屠苏"的年节习俗。百里屠苏的名字，其实并非主角的原名，而是他遭逢变故以后自己为自己取的新名，他希望能够拥有如同屠苏酒一般怯邪的能力，以保护身边的亲人。
+                </p>
+
+                <h2>人物关系</h2>
+                <hr>
+                <p>父亲：百里巫祝（npc对话中有提到）<br>
+                    母亲：韩休宁<br>
+                    师尊：紫胤真人<br>
+                    同门：陵越（师兄）、芙蕖（师妹）、陵端（师弟）、肇临等<br>
+                    爱人（妻子）：风晴雪<br>
+                    好友：方兰生、襄铃、红玉、尹千觞<br>
+                    宿敌（半身）：欧阳少恭<br>
+                    宠物：阿翔</p>
+                <h2>技能</h2>
+                <hr>
+
+                <h3>飞羽凌杀</h3>
+                <p>和爱鸟阿翔合力制敌的奇招，往往能趁敌不备，出奇制胜！<br>
+                    耗值：15点气、2行动点数<br>
+                    效果：与阿翔协力发动的特技攻击，敌方单体</p>
+
+                <h3>玄真剑</h3>
+                <p>习自师门的道家剑术，看似简单，但其中奥妙无穷！<br>
+                    耗值：22点气、2行动点数<br>
+                    效果：剑技攻击，敌方全体</p>
+
+                <h3>毁殇</h3>
+                <p>以自伤为代价，将体内凶戾之气融入天墉剑术的招式，非常凶煞！<br>
+                    耗值：4点气、2行动点数<br>
+                    效果：消耗自身精元发动强力攻击，敌方单体（终结技）</p>
+            </div>
+
+            <!-- 右栏：独立图片 -->
+            <div class="right-column">
+                <img src="百里屠苏.jpg" alt="百里屠苏立像" title="百里屠苏">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百里屠苏 · 古剑奇谭</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eae1d2;
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+            line-height: 1.6;
+            padding: 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            scroll-behavior: smooth;
+        }
+
+        .content-wrapper {
+            max-width: 1200px;
+            width: 100%;
+            background: #fffcf7;
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(60, 40, 20, 0.35),
+                        0 2px 8px rgba(0,0,0,0.05);
+            padding: 2.2rem 2.5rem;
+            border: 1px solid #e9dacb;
+        }
+
+        /* 两栏布局容器 */
+        .main-layout {
+            display: flex;
+            gap: 2.5rem;
+            align-items: flex-start;
+        }
+
+        /* 左栏：所有文字内容 */
+        .left-column {
+            flex: 2;
+            min-width: 0;
+        }
+
+        /* 右栏：图片区域 */
+        .right-column {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-column img {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 24px;
+            box-shadow: 0 16px 28px -10px rgba(70, 40, 20, 0.5),
+                        0 0 0 1px #dac9b6 inset;
+            border: 2px solid #cfb99c;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: #f2e6d8;
+            cursor: pointer;
+        }
+
+        .right-column img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 32px -8px #7a5a3c;
+        }
+
+        /* 标题h1 */
+        h1 {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem 1rem;
+            font-size: 2.8rem;
+            font-weight: 400;
+            letter-spacing: 4px;
+            color: #3e2c1c;
+            font-family: 'Georgia', 'Times New Roman', '宋体', serif;
+            text-shadow: 2px 2px 0 rgba(200, 170, 140, 0.15);
+            margin: 0 0 1rem 0;
+        }
+
+        /* 焚寂剑魄装饰 */
+        h1::after {
+            content: '⚔️ 焚寂·剑魄 ⚔️';
+            font-size: 0.9rem;
+            font-family: 'Georgia', '楷体', serif;
+            color: #ab8b6b;
+            letter-spacing: 1.5px;
+            font-weight: 300;
+            background: rgba(190, 160, 130, 0.15);
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            display: inline-block;
+            border: 1px solid #dac09e;
+            white-space: nowrap;
+        }
+
+        /* 导航按钮组 */
+        .tab-nav {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 2px solid #d0b69a;
+            color: #5c412c;
+            font-size: 1.2rem;
+            font-weight: 500;
+            padding: 0.6rem 1.8rem;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: 'Georgia', '楷体', serif;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 8px rgba(140, 100, 70, 0.1);
+            background: rgba(255, 245, 235, 0.6);
+        }
+
+        .tab-btn:hover {
+            background: #e5cfb8;
+            border-color: #9f7c5e;
+            color: #2e1e12;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px rgba(120, 80, 50, 0.2);
+        }
+
+        .tab-btn.active {
+            background: #b48a63;
+            border-color: #7b573b;
+            color: #fef7ea;
+            box-shadow: 0 6px 10px rgba(100, 60, 30, 0.3);
+        }
+
+        /* 内容区块 */
+        .content-block {
+            display: none;  /* 默认隐藏 */
+            animation: fade 0.3s ease;
+        }
+
+        .content-block.active {
+            display: block;
+        }
+
+        @keyframes fade {
+            from { opacity: 0.5; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 全局分隔线 */
+        .global-hr {
+            border: none;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #c2a27e, #ab8b64, #c2a27e, transparent);
+            margin: 1rem 0 2rem 0;
+            width: 100%;
+            border-radius: 4px;
+            opacity: 0.7;
+        }
+
+        /* 原有 hr 保留内部使用 */
+        hr {
+            border: none;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #c2a27e, #ab8b64, #c2a27e, transparent);
+            margin: 1.2rem 0 1.8rem 0;
+            width: 100%;
+            border-radius: 4px;
+            opacity: 0.7;
+        }
+
+        h2 {
+            font-size: 2.0rem;
+            font-weight: 380;
+            color: #4f3b28;
+            margin: 2rem 0 0.2rem 0;
+            padding-left: 1rem;
+            border-left: 8px solid #b48a63;
+            letter-spacing: 2px;
+            font-family: 'Georgia', '楷体', 'KaiTi', serif;
+        }
+
+        h3 {
+            font-size: 1.7rem;
+            font-weight: 420;
+            color: #6b4b30;
+            margin: 2.0rem 0 0.2rem 0;
+            padding-left: 0.8rem;
+            border-left: 5px solid #d1af8b;
+            font-family: 'Trebuchet MS', '楷体', serif;
+            letter-spacing: 1px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            color: #2e251e;
+            margin: 1rem 0;
+            text-align: justify;
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'WenQuanYi Micro Hei', sans-serif;
+        }
+
+        /* 后代选择器 */
+        #intro p {
+            background: rgba(250, 232, 232, 0.6);
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px 8px 20px 8px;
+            box-shadow: inset 0 1px 4px rgba(255, 250, 240, 0.8), 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .skill-card {
+            background: #fcf6ed;
+            border-radius: 30px 12px 30px 12px;
+            padding: 1.2rem 2rem;
+            box-shadow: 0 10px 18px -12px #947a60, 0 0 0 1px #eadbc9 inset;
+            font-size: 1.08rem;
+            margin: 1rem 0 2rem 0;
+            border-left: 6px solid #c5a176;
+            transition: background 0.2s, transform 0.25s ease, box-shadow 0.3s ease;
+        }
+
+        .skill-card:hover {
+            background: #faf0e2;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 24px -14px #7a6248, 0 0 0 1px #eadbc9 inset;
+        }
+
+        .relation-card {
+            background: #f4ecdf;
+            padding: 1.2rem 2rem;
+            border-radius: 24px 8px 24px 8px;
+            line-height: 2.1;
+            border: 1px solid #e1cfb6;
+        }
+
+        .name-card {
+            background: #f7f1e8;
+            border-radius: 30px 8px 30px 8px;
+            padding: 0.9rem 2rem;
+        }
+
+        /* 返回顶部按钮 */
+        .go-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: #c1a07e;
+            color: #fffcf7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 6px 12px rgba(90, 60, 30, 0.3);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, background 0.2s;
+            border: 1px solid #e3cfb8;
+            z-index: 99;
+        }
+
+        .go-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .go-top:hover {
+            background: #b0885e;
+            transform: scale(1.05);
+        }
+
+        /* 灯箱 */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .lightbox.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 3px solid #f0e0cd;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 3rem;
+            color: #fff;
+            cursor: pointer;
+            text-shadow: 0 2px 10px #000;
+            transition: transform 0.2s;
+        }
+
+        .lightbox-close:hover {
+            transform: scale(1.1);
+            color: #eac8aa;
+        }
+
+    </style>
+</head>
+<body>
+<div class="content-wrapper">
+    <div class="main-layout">
+        <!-- 左栏：文字内容 + 按钮 -->
+        <div class="left-column">
+            <h1>百里屠苏</h1>
+
+            <!-- 导航按钮组 -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="intro">简介</button>
+                <button class="tab-btn" data-tab="name">名字由来</button>
+                <button class="tab-btn" data-tab="relations">人物关系</button>
+                <button class="tab-btn" data-tab="skills">技能</button>
+            </div>
+
+            <!-- 全局分隔线 -->
+            <div class="global-hr"></div>
+
+            <!-- 内容区块：简介 -->
+            <div id="intro" class="content-block active">
+                <h2>简介</h2>
+                <p>上海烛龙研发的单机游戏《古剑奇谭：琴心剑魄今何在》第一男主角，贯穿游戏主题，为故事灵魂“琴心剑魄”之“剑魄”。</p>
+                <p>原名韩云溪，太子长琴半身。幼时经历灭族之灾，本来已死去，但因体内被封进了太子长琴一半魂魄而得以死而复生。身怀凶剑焚寂的煞气，在某次煞气发作中被紫胤真人所救，后拜入昆仑山天墉城，以“屠绝鬼气，苏醒人魂”之意更名为“百里屠苏”。</p>
+                <p>十年后，他为寻找灭族仇人而离开天墉城，踏上了漫漫征途。</p>
+            </div>
+
+            <!-- 内容区块：名称由来 -->
+            <div id="name" class="content-block">
+                <h2>名称由来</h2>
+                <hr>
+                <p class="name-card">屠苏之名，取自一种药草，也指一种酒。据说药王孙思邈以屠苏草入酒，因此有了屠苏酒。这种酒能辟邪防病，后世人们在除夕的夜晚喝屠苏酒以辞岁，希望屠苏酒辟邪防病的效果能带来健康而平安的新年，最终便有了"年年岁末饮屠苏"的年节习俗。百里屠苏的名字，其实并非主角的原名，而是他遭逢变故以后自己为自己取的新名，他希望能够拥有如同屠苏酒一般怯邪的能力，以保护身边的亲人。</p>
+            </div>
+
+            <!-- 内容区块：人物关系 -->
+            <div id="relations" class="content-block">
+                <h2>人物关系</h2>
+                <hr>
+                <p class="relation-card">父亲：百里巫祝（npc对话中有提到）<br>
+                母亲：韩休宁<br>
+                师尊：紫胤真人<br>
+                同门：陵越（师兄）、芙蕖（师妹）、陵端（师弟）、肇临等<br>
+                爱人（妻子）：风晴雪<br>
+                好友：方兰生、襄铃、红玉、尹千觞<br>      
+                宿敌（半身）：欧阳少恭<br>
+                宠物：阿翔</p>
+            </div>
+
+            <!-- 内容区块：技能 -->
+            <div id="skills" class="content-block">
+                <h2>技能</h2>
+                <hr>
+
+                <h3>飞羽凌杀</h3>
+                <p class="skill-card">和爱鸟阿翔合力制敌的奇招，往往能趁敌不备，出奇制胜！<br>
+                耗值：15点气、2行动点数<br>
+                效果：与阿翔协力发动的特技攻击，敌方单体</p>
+
+                <h3>玄真剑</h3>
+                <p class="skill-card">习自师门的道家剑术，看似简单，但其中奥妙无穷！<br>
+                耗值：22点气、2行动点数<br>
+                效果：剑技攻击，敌方全体</p>
+
+                <h3>毁殇</h3>
+                <p class="skill-card">以自伤为代价，将体内凶戾之气融入天墉剑术的招式，非常凶煞！<br>
+                耗值：4点气、2行动点数<br>
+                效果：消耗自身精元发动强力攻击，敌方单体（终结技）</p>
+            </div>
+        </div>
+
+        <!-- 右栏：图片保持不变 -->
+        <div class="right-column">
+            <img src="百里屠苏.jpg" alt="百里屠苏立像" title="点击查看大图" id="mainImage">
+        </div>
+    </div>
+</div>
+
+<!-- 返回顶部按钮 -->
+<div class="go-top" id="goTop" title="返回顶部">↑</div>
+
+<!-- 灯箱结构 -->
+<div class="lightbox" id="lightbox">
+    <span class="lightbox-close" id="lightboxClose">&times;</span>
+    <img src="百里屠苏.jpg" alt="百里屠苏大图" id="lightboxImg">
+</div>
+
+<script>
+(function() {
+        // 获取元素
+        const mainImage = document.getElementById('mainImage');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxClose = document.getElementById('lightboxClose');
+        const goTop = document.getElementById('goTop');
+
+        // 灯箱功能
+        if (mainImage) {
+            mainImage.addEventListener('click', function() {
+                lightboxImg.src = this.src;
+                lightbox.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && lightbox.classList.contains('show')) {
+                closeLightbox();
+            }
+        });
+
+        // 返回顶部
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                goTop.classList.add('show');
+            } else {
+                goTop.classList.remove('show');
+            }
+        });
+
+        goTop.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 图片加载失败处理
+        mainImage.onerror = function() {
+            this.style.background = '#ddd';
+            this.alt = '图片加载失败';
+        };
+
+        // ---------- 标签切换功能 ----------
+        // 获取所有标签按钮和内容块
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const contentBlocks = document.querySelectorAll('.content-block');
+
+        // 实现切换函数，根据tabId显示对应内容块和按钮激活状态
+        function switchTab(tabId) {
+            // 隐藏所有内容块
+            contentBlocks.forEach(block => {
+                block.classList.remove('active');
+            });
+            // 显示选中块
+            const activeBlock = document.getElementById(tabId);
+            if (activeBlock) activeBlock.classList.add('active');
+
+            // 按钮激活状态
+            tabBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.tab === tabId) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // 为按钮绑定事件
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabId = this.dataset.tab;  // 对应 content-block 的 id
+                if (tabId) switchTab(tabId);
+            });
+        });
+
+        // 默认激活简介 (已在html中设置active，但为了保险执行一次)
+        // 确保初始状态正确（如果有多个active，只会保留简介）
+        const defaultTab = document.querySelector('.tab-btn.active')?.dataset.tab || 'intro';
+        switchTab(defaultTab);
+    })();
+</script>
+</body>
+</html>
